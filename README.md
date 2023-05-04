@@ -3,7 +3,7 @@ pip install arcade
 
 pip install
 
-##update pip
+ ## update pip
 python.exe -m pip install --upgrade pip
 
 
