@@ -73,6 +73,9 @@ class MyGame(arcade.Window):
         self.rock = arcade.Sprite('assets/srock.png', 0.5, center_x=SCREEN_WIDTH/ 3, center_y=SCREEN_HEIGHT/ 5)
         self.paper = arcade.Sprite('assets/spaper.png', 0.5, center_x=SCREEN_WIDTH/ 4, center_y=SCREEN_HEIGHT/ 5 )
         self.scissors = arcade.Sprite('assets/scissors.png', 0.5, center_x=SCREEN_WIDTH/ 6, center_y=SCREEN_HEIGHT/ 5)
+        self.rock0 = arcade.Sprite('assets/srock.png', 0.5, center_x=SCREEN_WIDTH / 1.5, center_y=SCREEN_HEIGHT / 5)
+        self.paper0 = arcade.Sprite('assets/spaper.png', 0.5, center_x=SCREEN_WIDTH / 1.33, center_y=SCREEN_HEIGHT / 5)
+        self.scissors0 = arcade.Sprite('assets/scissors.png', 0.5, center_x=SCREEN_WIDTH / 1.196, center_y=SCREEN_HEIGHT / 5)
 
 
     def validate_victory(self):
@@ -93,15 +96,15 @@ class MyGame(arcade.Window):
         """
        Méthode utilisée pour dessiner les possibilités d'attaque de l'ordinateur
        """
-        pass
+
 
     def draw_scores(self):
         """
        Montrer les scores du joueur et de l'ordinateur
        """
-        arcade.draw_text(f"le pointage est: {self.computer_score}", 0, SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 3,
+        arcade.draw_text(f"le pointage est: {self.computer_score}", 230 , SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 12.5,
                          arcade.color.APPLE_GREEN, 30, width=SCREEN_WIDTH, align="center")
-        arcade.draw_text(f"le pointage est: {self.player_score}", 0, SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 3,
+        arcade.draw_text(f"le pointage est: {self.player_score}",-230, SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 12.5,
                          arcade.color.APPLE_GREEN, 30, width=SCREEN_WIDTH, align="center")
         pass
 
@@ -116,10 +119,11 @@ class MyGame(arcade.Window):
         ###########
         #####
         ##########################
+       #print(self.game_state)
         if self.game_state == GameState.NOT_STARTED:
             arcade.draw_text("appuyer sur la touche espace pour commencer la partie ",0,SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 3,
                              arcade.color.APPLE_GREEN,30, width=SCREEN_WIDTH, align="center")
-        elif self.game_state == game_state.GameState.ROUND_ACTIVE:
+        elif self.game_state == GameState.ROUND_ACTIVE:
             #j'ai un probleme ici lorsque j'appuie sur espace le game_state ne change pas alors pas de message "appuyer sur une image pour choisir son attaque " afficher
             #alors j'ai continuer le code comme si il y avait pas de probleme
             arcade.draw_text("appuyer sur une image pour choisir son attaque ", 0, SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 3,
@@ -145,6 +149,16 @@ class MyGame(arcade.Window):
         arcade.draw_rectangle_outline(SCREEN_WIDTH / 3, SCREEN_HEIGHT / 5, self.ATTACK_FRAME_WIDTH, self.ATTACK_FRAME_HEIGHT, arcade.color.FUZZY_WUZZY, 5 )
         arcade.draw_rectangle_outline(SCREEN_WIDTH / 4, SCREEN_HEIGHT / 5,  self.ATTACK_FRAME_WIDTH, self.ATTACK_FRAME_HEIGHT, arcade.color.FUZZY_WUZZY, 5)
         arcade.draw_rectangle_outline(SCREEN_WIDTH / 6, SCREEN_HEIGHT / 5,  self.ATTACK_FRAME_WIDTH, self.ATTACK_FRAME_HEIGHT, arcade.color.FUZZY_WUZZY,5)
+
+        self.rock0.draw()
+        self.paper0.draw()
+        self.scissors0.draw()
+        arcade.draw_rectangle_outline(SCREEN_WIDTH / 1.5, SCREEN_HEIGHT / 5, self.ATTACK_FRAME_WIDTH,
+                                      self.ATTACK_FRAME_HEIGHT, arcade.color.FUZZY_WUZZY, 5)
+        arcade.draw_rectangle_outline(SCREEN_WIDTH / 1.33, SCREEN_HEIGHT / 5, self.ATTACK_FRAME_WIDTH,
+                                      self.ATTACK_FRAME_HEIGHT, arcade.color.FUZZY_WUZZY, 5)
+        arcade.draw_rectangle_outline(SCREEN_WIDTH / 1.196, SCREEN_HEIGHT / 5, self.ATTACK_FRAME_WIDTH,
+                                      self.ATTACK_FRAME_HEIGHT, arcade.color.FUZZY_WUZZY, 5)
 
         # Display title
         arcade.draw_text(SCREEN_TITLE,0,SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 2,arcade.color.FUZZY_WUZZY,60, width=SCREEN_WIDTH, align="center")
@@ -183,21 +197,17 @@ class MyGame(arcade.Window):
        http://arcade.academy/arcade.key.html
        """
         if (self.game_state == GameState.NOT_STARTED and key == arcade.key.SPACE):
-            self.game_state == GameState.ROUND_ACTIVE
+            self.game_state = GameState.ROUND_ACTIVE
+            print('active')
+
         elif self.game_state == GameState.ROUND_DONE:
             self.reset_round()
-            self.game_state == GameState.ROUND_ACTIVE
-        elif self.game_state == GameState.GAME_OVER:
-            self.game_state == GameState.ROUND_ACTIVE
+            self.game_state = GameState.ROUND_ACTIVE
 
-    #if (self.game_state == GameState.NOT_STARTED and key == arcade.key.SPACE):
-    #    self.game_state == game_state.GameState.ROUND_ACTIVE
-#
-    #if (self.game_state == GameState.ROUND_DONE and key == arcade.key.SPACE):
-    #    self.game_state == game_state.GameState.ROUND_ACTIVE
-#
-    #if (self.game_state == GameState.GAME_OVER and key == arcade.key.SPACE):
-    #    self.game_state == game_state.GameState.ROUND_ACTIVE
+        elif self.game_state == GameState.GAME_OVER:
+            self.game_state = GameState.ROUND_ACTIVE
+
+
 
 
     def reset_round(self):
@@ -212,6 +222,15 @@ class MyGame(arcade.Window):
         pass
 
 
+    def attack_robot(self):
+        attack_random = random.choice(list(attack_animation.AttackType))
+        print(attack_random)
+
+        #ROCK = 0,
+        #PAPER = 1,
+        #SCISSORS = 2
+
+
         """
        Méthode invoquée lorsque l'usager clique un bouton de la souris.
        Paramètres:
@@ -220,16 +239,26 @@ class MyGame(arcade.Window):
            - key_modifiers: est-ce que l'usager appuie sur "shift" ou "ctrl" ?
        """
 
+
     def on_mouse_press(self, x, y, button, key_modifiers):
         if self.rock.collides_with_point((x, y)):
             self.player_attack_type= 0
             self.player_attack_chosen = True
+            print('rock')
+            self.attack_robot()
+
+
         if self.paper.collides_with_point((x, y)):
             self.player_attack_type= 1
             self.player_attack_chosen = True
+            print('paper')
+            self.attack_robot()
+
         if self.scissors.collides_with_point((x, y)):
             self.player_attack_type= 2
             self.player_attack_chosen = True
+            print('scissors')
+            self.attack_robot()
 
 
 
